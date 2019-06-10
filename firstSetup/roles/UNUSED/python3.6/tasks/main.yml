@@ -1,0 +1,108 @@
+---
+# tasks file for python3.6
+
+- block:
+
+  - name: Python3 | install dependencies
+    apt:
+      name: "{{item}}"
+      state: present
+    loop:
+        - make
+        - build-essential
+        - libffi-dev
+        - zlib1g-dev
+        - libreadline-gplv2-dev
+        - libncursesw5-dev
+        - libssl-dev
+        - libsqlite3-dev
+        - tk-dev
+        - libgdbm-dev
+        - libc6-dev
+        - libbz2-dev
+
+  when: ansible_facts['os_family'] == "Debian"
+
+- block:
+
+  - name: Python3 | install dependencies
+    yum:
+      name: "{{item}}"
+      state: present
+    loop:
+      - gcc
+      - glibc
+      - glibc-common
+      - gd
+      - gd-devel
+      - zlib-devel
+      - openssl-devel
+      - libffi-devel
+
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Python3 | Download distribution
+  get_url:
+      url: "https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version }}.tgz"
+      dest: /tmp/Python-{{ python_version }}.tgz
+
+- name: Python3 | Unpack distribution
+  unarchive:
+      src: /tmp/Python-{{ python_version }}.tgz
+      dest: /tmp
+      remote_src: yes
+
+- name: Python3 | Configure for install
+  command: "./configure"
+  args:
+      chdir: "/tmp/Python-{{ python_version }}"
+
+- name: Python3 | make
+  become: yes
+  command: "make"
+  args:
+      chdir: "/tmp/Python-{{ python_version }}"
+
+- name: Python3 | make install
+  become: yes
+  command: "make install"
+  args:
+      chdir: "/tmp/Python-{{ python_version }}"
+
+#- block:
+
+#  - name: Add python3 repo
+#    apt_repository:
+#      repo: deb http://ftp.de.debian.org/debian testing main
+#      state: present
+
+#  - name: Apt-get update
+#    apt:
+#      update_cache: yes
+
+#  - name: Install python3
+#    apt:
+#      name: "{{item}}"
+#      state: present
+#    loop:
+#      - python36
+#      - python36-pip
+#      - python36-devel
+#      - python36-setuptools
+
+#  when: ansible_facts['os_family'] == "Debian"
+
+#- block:
+
+#  - name: Install Python3.6
+#    become: yes
+#    yum:
+#      name: "{{ item }}"
+#      state: present
+#    loop:
+#      - python36
+#      - python36-pip
+#      - python36-devel
+#      - python36-setuptools
+
+#  when: ansible_facts['os_family'] == "RedHat"

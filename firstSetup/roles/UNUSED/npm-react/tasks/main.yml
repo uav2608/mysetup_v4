@@ -1,0 +1,96 @@
+---
+# tasks file for npm-react
+
+- block
+
+ - name: Add NPM respository
+    become: yes
+    shell: curl -sL https://deb.nodesource.com/setup_11.x | bash -
+
+  - name: "apt-get update"
+    apt:
+      update_cache: yes
+
+  - name: Install Nodejs
+    apt:
+      name: "{{ item }}"
+      state: latest
+    loop:
+      - nodejs
+
+  - name: Node v
+    shell: node -v
+    register: output
+
+  - debug: msg="{{output.stdout}}"
+
+  when ansible_facts['os_family'] == "Debian"
+
+- block
+
+  when ansible_facts['os_family'] == "RedHat"
+ 
+- name: install React
+  become: yes
+  npm:
+    name: create-react-app
+    global: yes  
+
+
+#- block
+
+#  - name: Install NPM pre-requisites
+#    apt:
+#      name: "{{ item }}"
+#      state: latest
+#    loop:
+#      - gcc
+#      - g++
+#      - clang
+#      - make
+
+#  when ansible_facts['os_family'] == "Debian"
+
+#- block
+
+#  - name: Install NPM pre-requisites
+#    yum:
+#      name: "{{ item }}"
+#      state: latest
+#    loop:
+#      - gcc
+#      - g++
+#      - clang
+#      - make
+
+#  when ansible_facts['os_family'] == "RedHat"
+
+#- name: Nodejs | Download distribution
+#  get_url:
+#      url: "https://www.nodejs.org/dist/v{{ node_version }}/node-v{{ node_version }}.tar.gz"
+#      dest: /tmp/node-v{{ node_version }}.tar.gz
+
+#- name: Nodejs | Unpack distribution
+#  unarchive:
+#      src: /tmp/node-v{{ node_version }}.tar.gz
+#      dest: /tmp
+#      remote_src: yes
+
+#- name: Nodejs | Configure for install
+#  command: "./configure"
+#  args:
+#      chdir: "/tmp/node-v{{ node_version }}"
+
+#- name: Nodejs | make
+#  become: yes
+#  command: "make -j4"
+#  args:
+#      chdir: "/tmp/node-v{{ node_version }}"
+
+#- name: Nodejs | make install
+#  become: yes
+#  command: "make install"
+#  args:
+#      chdir: "/tmp/node-v{{ node_version }}-linux-x64"
+
+

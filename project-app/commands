@@ -1,0 +1,14 @@
+[packer]
+packer.io build -var-file=./var-react[or any file] packer-template-react.json [or any other file] #to duild docker images in local host
+bash docker-stop.sh #to stop running containers
+bash docker-rm.sh #to remove containers
+
+[ansible]
+ansible-playbook playbook-react.yaml[or any other name] --limit=vagrant #running playbooks in limited hosts
+
+[general commands]
+tar -czvf app-flask.tar.gz * #archive
+tar -xzvf app-flask.tar.gz -C /tmp #extract
+
+[flask]
+python3.7 manage.py runserver -h 0.0.0.0

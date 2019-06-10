@@ -1,0 +1,32 @@
+---
+- hosts: all
+  gather_facts: no
+  become: yes
+
+  vars_files: 
+    - ./vars/requirements.yaml
+
+  tasks:
+    - name: Add EPEL repository
+      yum_repository:
+        name: epel
+        description: EPEL YUM repo
+        file: external_repos
+        baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+        gpgcheck: no
+
+    - name: Install Pip
+      yum:
+        name: python-pip
+        state: present
+
+    - name: Install pip requirements.txt
+      pip:
+        name: "{{ item }}"
+      loop: "{{ requirements }}"
+      
+    - name: Copy app folder to container
+      copy:
+        src: ./flask/
+        dest: /app
+        owner: root

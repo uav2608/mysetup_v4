@@ -1,0 +1,53 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: yes
+  become: true
+  become_method: su
+  become_user: root
+
+  tasks:
+
+  - name: Make sure to have Wheel group
+    group:      
+      name: wheel
+      state: present
+
+  - name: Add user to Wheel group
+    user:
+      name: "{{ ansible_user }}"
+      groups: wheel
+
+  - name: Update sudoer file
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%wheel\s'
+      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+
+  - name: create a .ssh directory if it doesn't exist
+    file:
+      path:  /home/{{ ansible_user }}/.ssh
+      state: directory
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 0700
+
+  - name: create file 
+    file:
+      path: /home/{{ ansible_user }}/.ssh/authorized_keys
+      state: touch
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 0644
+      modification_time: "preserve"
+      access_time: "preserve"
+
+  - name: Copy authorized_keys
+    lineinfile:
+      path: /home/{{ ansible_user }}/.ssh/authorized_keys 
+      state: present
+      line: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzFL6ui6eG+tXcFVdU0JdBbgb65tdD4speaAsMJkai+la6HY7fUuAvGnbdlk+3jpUGOrUy+xGXUuBW4IhXahEUy5u4FJwjbC5+PLvIrSxlGeN6GXjiJzB/Lnpt6Y9EoPPqyZ0ATxxqO8t5NZlD7CNktY72sytceJWgrhHEzYj6FhCIJPhAzZAWWnJYMbv/2lKSgVQUGaYEearMzdx3Oz0IjCWzgifXgIq7rHh2rT7xoVuPqjk/QXYOuvilCo5lIEjfVNoV6aKRWX4rfiQ/waypVH9XvP/cy+K1iWYfHSXAH2YmwozkNLYF87E4Qp2MCmOFwW06NnX+mcDPzbtwvDt5 ansibleuser1@localhost.test'
+
+

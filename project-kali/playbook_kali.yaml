@@ -1,0 +1,20 @@
+---
+- hosts: all
+  gather_facts: yes
+#  remote_user: root
+  become: True
+  roles:
+    - ../firstSetup/roles/firstsetupkali
+
+- hosts: all
+  gather_facts: yes
+  remote_user: john1010
+  become: True
+  roles:
+    - ../firstSetup/roles/nextstepkali
+    - ../firstSetup/roles/openvpnkali
+    - role: ../firstSetup/roles/tor_kali
+      vars:
+        dist_number: 8.5.1
+
+

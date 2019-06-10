@@ -1,0 +1,5 @@
+---
+# vars file for flask-app
+
+project_path: ansibleuser1/project-flask-react/users-service
+

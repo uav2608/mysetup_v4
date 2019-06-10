@@ -1,0 +1,44 @@
+{
+  "builders": [
+    {
+      "name": "Flask container",
+      "type": "docker",
+      "image": "python:2.7.16-alpine3.9",
+      "commit": "true",
+      "run_command": [
+          "-d",
+          "-i",
+          "-t",
+          "{{.Image}}",
+          "/bin/sh"
+      ],
+      "changes": [
+          "WORKDIR /app", 
+          "EXPOSE 4000",
+          "ENTRYPOINT [\"python\",\"index.py\"]"
+      ]
+    }
+   ],
+
+  "provisioners": [
+    {
+      "type": "shell-local",
+      "command": "sudo apk update && sudo apk upgrade && sudo apk add bash bash-completion && sudo apk add python"
+    },
+
+    {
+      "type": "ansible",
+      "user": "root",
+      "playbook_file": "./playbook.yaml"
+    }
+   ],
+
+  "post-processors": [
+    {
+      "type": "docker-tag",
+      "repository": "uav2608.flask.v1",
+      "tag":"0.0.2"
+    }
+   ]
+}
+

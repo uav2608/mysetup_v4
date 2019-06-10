@@ -1,0 +1,101 @@
+---
+# tasks file for flask-app
+
+- name: Create WORKDIR
+  file:
+    path: /usr/src/app
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- block:
+
+  - name: Install Epel-repository
+    yum:
+      name: epel-release
+      state: present
+
+  - name: Install pip, rsync and sudo
+    yum:
+      name: "{{item}}"
+      state: present
+    loop:
+      - python-pip
+      - rsync
+      - sudo
+      - python36
+      - python36-pip
+      - python36-devel
+      - python36-setuptools
+
+  when: ansible_facts['os_family'] == "RedHat"
+
+- block:
+
+  - name: Add python3 repo
+    apt_repository:
+      repo: deb http://ftp.de.debian.org/debian testing main
+      state: present
+
+  - name: Apt-get update
+    apt:
+      update_cache: yes
+
+  - name: Install pip, rsync and sudo
+    apt:
+      name: "{{item}}"
+      state: present
+    loop:
+      - python-pip
+      - sudo
+      - rsync
+      - python36
+      - python36-pip
+      - python36-devel
+      - python36-setuptools
+
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Copy files to /usr/src/app
+  copy:
+    src: /{{base_path}}/{{project_path}}/requirements.txt
+    dest: /usr/src/app/
+    owner: root
+    group: root
+    mode: 0664
+
+- name: Install flask packages
+  shell: pip3 install -r /usr/src/app/requirements.txt
+
+- name: Copy file to /usr/src/app
+  copy:
+    src: /{{base_path}}/{{project_path}}/manage.py
+    dest: /usr/src/app/
+    owner: root
+    group: root
+    mode: 0664
+
+- name: Copy files to /usr/scr/app/project
+  synchronize:
+    src: /{{base_path}}/{{project_path}}/project
+    dest: /usr/src/app/
+
+#- name: Copy files to /usr/src/app/project
+#  copy:
+#    src: /{{main_path}}/{{flask_project_path}}/project
+#    dest: /usr/src/app/
+#    owner: root
+#    group: root
+#    mode: 0664
+
+
+#- name: check if file exists
+#  sitat:
+#    path: /usr/src/app/requirements.txt
+#  register: file1
+
+#- debug:
+#    msg: "{{file1}}"
+
+

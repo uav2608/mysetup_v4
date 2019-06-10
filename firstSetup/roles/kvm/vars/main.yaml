@@ -1,0 +1,20 @@
+---
+# KVM packages
+kvm_packages1: 
+  - qemu
+  - libvirt
+  - libvirt-devel
+  - ruby-devel
+  - gcc
+  - qemu-kvm
+  - qemu-img
+  - libvirt-python
+  - libvirt-client
+  - virt-install
+  - virt-viewer
+  - virt-manager
+
+kvm_packages2: 
+  - "https://cdimage.kali.org/kali-2019.1a/kali-linux-xfce-2019.1a-amd64.iso"
+
+current_user : ansibleuser2

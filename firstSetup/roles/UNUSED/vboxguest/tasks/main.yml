@@ -1,0 +1,22 @@
+---
+# tasks file for vboxguest
+
+- name: Install Packages
+  yum:
+      name: "{{ item }}"
+      state: present
+  loop: "{{ packages }}"
+
+- name: Mount disk
+  mount:
+    path: /mnt/media
+    src: /dev/cdrom
+    fstype: iso9660
+    opts: ro, noauto
+    state: mounted
+
+- name: setting Env variable
+  shell: "export KERN_DIR=/usr/src/kernels/$(uname -r)"
+
+- name: install guest additions
+  shell: /mnt/media/VBoxLinuxAdditions.run

@@ -1,0 +1,39 @@
+client 
+
+dev tun0 
+
+proto tcp 
+
+remote {{ myipaddresstcpsm }}
+
+redirect-gateway def1 
+
+nobind
+
+tun-mtu 1500
+
+tun-mtu-extra 32
+
+ca ca.crt
+
+cert user.crt
+
+key user.key
+
+cipher AES-256-CBC
+
+remote-cert-tls server
+
+persist-key
+
+persist-tun
+
+verb 3
+
+route-method  exe
+
+route-delay 3
+
+route-metric 512 
+
+scramble obfuscate hxve9cg]]6nkvj;$

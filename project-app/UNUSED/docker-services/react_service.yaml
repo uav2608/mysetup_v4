@@ -1,0 +1,24 @@
+---
+- name: React docker service
+  docker_service:
+    project_name: react
+    definition:
+       version: '3.3'
+       services:
+          reactapp:
+              image: "{{react_image}}"
+              volumes:
+                - '/{{base_path}}/{{development_path}}/{{react_project_path}}:/usr/src/app'
+              ports:
+                - "3000:3000"
+  register: output
+
+- name: Register the output
+  debug:
+       var: output
+
+- name: test
+  assert:
+       that:
+          - "reactapp.react_reactapp_2.state.running"
+

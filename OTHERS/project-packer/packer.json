@@ -1,0 +1,38 @@
+{
+  "builders": [
+    {
+      "name": "docker",
+      "type": "docker",
+      "image": "gitlab/gitlab-ce",
+      "commit": "true"
+    }
+   ],
+
+  "builders": [
+    {
+      "name": "docker",
+      "type": "docker",
+      "image": "gitlab/gitlab-runner",
+      "commit": "true"
+    }
+   ],
+
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "playbook.yaml"
+    }
+   ],
+
+  "post-processors": [ 
+    {
+      "type": "docker-tag",
+      "repository": "uav2608/flaskv1",
+      "tag":"0.0.1"
+    }
+   ]
+}
+
+
+
+

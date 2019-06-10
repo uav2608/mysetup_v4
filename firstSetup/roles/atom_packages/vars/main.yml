@@ -1,0 +1,26 @@
+---
+# vars file for atom-packages
+
+atom_packages: 
+  - autocomplete-plus
+  - highlight-selected
+  - pigments
+  - color-picker 
+  - minimap
+  - atom-beautify 
+  - atom-alignment 
+  - git-plus
+  - sync-settings 
+  - file-icons 
+  - emmet
+  - ask-stack
+  - autoclose-html 
+  - script
+  - atom-react-autocomplete
+  - language-babel
+  - linter
+  - linter-jscs
+  - linter-csslint 
+  - linter-flake8
+  - linter-pydocstyle
+

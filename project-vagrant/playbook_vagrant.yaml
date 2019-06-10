@@ -1,0 +1,15 @@
+---
+
+- hosts: all
+  gather_facts: yes
+  remote_user: vagrant
+  become: yes
+  roles:
+    - ../firstSetup/roles/firstSetupOthers
+
+- hosts: all
+  gather_facts: yes
+  remote_user: john1010
+  become: true
+  roles:
+    - ../firstSetup/roles/nextstep

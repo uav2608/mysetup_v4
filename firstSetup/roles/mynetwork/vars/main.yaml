@@ -1,0 +1,10 @@
+---
+interface_device_name   : "{{ ansible_interfaces | select('match', '^(et|en)') | list | join('\n') }}"
+bridge_device_name      : 'virbr2'
+#network_addr                 : '192.168.123.1/24'
+static_ip_addr          : "{{ network_addr | ipaddr('-20') | ipaddr('address') }}"
+static_gateway          : "{{ network_addr | ipaddr('first_usable')| ipaddr('address') }} "
+static_ip1              : "{{ network_addr | ipaddr('last_usable') }}"
+
+##temp_addr               : "{{ ansible_all_ipv4_addresses | select('match', '^(192)' ) | list | join('\n') }}/24"
+

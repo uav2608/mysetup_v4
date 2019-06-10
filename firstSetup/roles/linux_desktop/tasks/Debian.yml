@@ -1,0 +1,40 @@
+- name: install desktop environment KDE (Debian)
+  apt:  name={{ item }} state=present install_recommends=yes
+  with_items:
+    - kde-standard
+    - kde-plasma-desktop
+  when: linux_desktop == 'kde'
+
+- name: install desktop environment Cinnamon (Debian)
+  apt:  name={{ item }} state=present install_recommends=no
+  with_items:
+    - cinnamon-core
+    - libgl1-mesa-dri 
+    - x11-xserver-utils
+    - gnome-terminal
+    - lightdm
+  when: linux_desktop == 'cinnamon'
+
+- name: install desktop environment Gnome (Debian)
+  apt:  name={{ item }} state=present install_recommends=no
+  with_items:
+    - gnome
+  when: linux_desktop == 'gnome'
+
+- name: install desktop environment Mate (Debian)
+  apt:  name={{ item }} state=present install_recommends=no
+  with_items:
+    - mate-desktop-environment
+    - lightdm
+  when: linux_desktop == 'mate'
+
+- name: install desktop environment Xfce (Debian)
+  apt:  name={{ item }} state=present install_recommends=no
+  with_items:
+    - xfce4
+    - xfce4-goodies
+    - lightdm
+  when: linux_desktop == 'xfce'
+
+- name: install Xorg (Debian)
+  apt: name='xorg' state=present

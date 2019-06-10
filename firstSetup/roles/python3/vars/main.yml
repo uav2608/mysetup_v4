@@ -1,0 +1,55 @@
+---
+# vars file for python3
+
+# defaults file for smehan.python3_compiled
+compiled_python_version: 3.7.2
+compiled_python_dist_name:  "Python-{{ compiled_python_version }}"
+compiled_python_tarball: "{{ compiled_python_dist_name }}.tar.xz"
+compiled_python_build_dir: "/tmp"
+compiled_python_cleanup: False  # if true, will remove make directory after build.
+
+# # corresponding pip
+compiled_python_with_pip: True  # if true, correct pip will also be installed
+
+compiled_configure_flags: "--prefix=/usr --enable-optimizations "
+
+# Define centos7 dependecies
+compiled_python3_centos7_deps:
+  - gcc
+  - gcc-c++
+  - make
+  - python-devel
+  - bzip2-devel
+  - zlib
+  - zlib-devel
+  - lzma
+  - ncurses-devel
+  - gdbm-devel
+  - openssl
+  - openssl-devel
+  - iproute-devel
+  - tk-devel
+  - readline-devel
+  - sqlite-devel
+  - libffi-devel
+
+compiled_python3_debian_deps:
+  - build-essential
+  - libssl-dev
+  - libcurl4-openssl-dev
+  - zlib1g-dev
+  - libncurses5-dev
+  - libncursesw5-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - libgdbm-dev
+  - libdb5.3-dev
+  - libbz2-dev
+  - libexpat1-dev
+  - liblzma-dev
+  - checkinstall
+  - zlibc
+  - tk-dev
+  - libc6-dev
+  - libffi-dev
+                                                                             

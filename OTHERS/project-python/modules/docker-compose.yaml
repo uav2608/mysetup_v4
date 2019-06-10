@@ -1,0 +1,16 @@
+version: '3.5'
+services:
+ web_dev:
+#  image: uav2608.flask.v1
+  image: e91d189a61d1
+  ports:
+   - "4000:4000"
+  volumes:
+   - .:/app
+  environment:
+   - ENV=development
+   - PORT=4000
+   - DB=mongodb://mongodb:27017/todoDev
+networks:
+ default:
+  name: web_dev

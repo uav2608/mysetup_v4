@@ -1,0 +1,44 @@
+- name: install X11 (Centos)
+  shell: 'yum groups install -y "X Window System"'
+
+- name: install desktop environment KDE (Centos)
+  yum: name="@^KDE Plasma Workspaces" state=present enablerepo=epel
+  when: linux_desktop == 'kde'
+
+- name: install desktop environment Cinnamon (Centos)
+  yum: name="cinnamon*" state=present enablerepo=epel
+  when: linux_desktop == 'cinnamon'
+
+- name: Cinnamon needs a terminal (Centos)
+  yum: name="gnome-terminal" state=present enablerepo=epel
+  when: linux_desktop == 'cinnamon'
+
+- name: install desktop environment Gnome (Centos)
+  yum: name="@^Gnome Desktop" state=present enablerepo=epel
+  when: linux_desktop == 'gnome'
+
+- name: install desktop environment Mate (Centos)
+  yum: name="@^MATE Desktop" state=present enablerepo=epel
+  when: linux_desktop == 'mate'
+
+- name: install desktop environment Xfce (Centos)
+  yum: name=@Xfce state=present enablerepo=epel
+  when: linux_desktop == 'xfce'
+
+- name: create xinitrc (Centos)
+  file:
+   path: '/home/{{linux_desktop_user}}/.xinitrc'
+   state: touch
+  when: linux_desktop == 'xfce' or linux_desktop == 'mate' or linux_desktop == 'cinnamon'
+
+- name: xinitrc xfce (Centos)
+  lineinfile: line="exec /usr/bin/xfce4-session" dest='/home/{{linux_desktop_user}}/.xinitrc'
+  when: linux_desktop == 'xfce'
+
+- name: xinitrc mate (Centos)
+  lineinfile: line="exec /usr/bin/mate-session" dest='/home/{{linux_desktop_user}}/.xinitrc'
+  when: linux_desktop == 'mate'
+
+- name: xinitrc cinnamon (Centos)
+  lineinfile: line="exec /usr/bin/cinnamon-session" dest='/home/{{linux_desktop_user}}/.xinitrc'
+  when: linux_desktop == 'cinnamon'

@@ -1,0 +1,10 @@
+---
+# vars file for dev_ide
+
+dev_packages: 
+  - "https://github.com/atom/atom/releases/download/v1.36.0/atom.x86_64.rpm"
+
+jetbrain_packages:
+  - "https://download.jetbrains.com/python/pycharm-professional-2019.1.2.tar.gz"
+  - "https://download.jetbrains.com/webstorm/WebStorm-2019.1.2.tar.gz"
+

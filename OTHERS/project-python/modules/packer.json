@@ -1,0 +1,49 @@
+{
+  "builders": [
+    {
+      "name": "Flask container",
+      "type": "docker",
+      "image": "python:2.7.16-alpine3.9",
+      "commit": "true",
+      "changes": [
+         "WORKDIR /app",
+         "EXPOSE 4000",
+         "CMD [\"sudo\", \"apk\", \"update\", \"&&\", \"sudo\", \"apk\", \"upgrade\", \"&&\", \"sudo\", \"apk\", \"add\", \"bash\", \"bash-completion\"]",
+         "ENTRYPOINT [\"python\",\"index.py\"]"
+      ]
+    }
+   ],
+
+  "provisioners": [
+    {
+      "type": "shell-local",
+      "command": "sudo apk update && sudo apk upgrade && sudo apk add bash bash-completion"
+    }
+   ],
+
+
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "./",
+      "destination": "/app"
+    }
+   ],
+
+  "provisioners": [
+    {
+      "type": "shell-local",
+      "command": "sudo pip install --upgrade pip",
+      "command": "sudo pip install -r requirements.txt"
+    }
+   ],
+
+  "post-processors": [
+    {
+      "type": "docker-tag",
+      "repository": "uav2608.flask.v1",
+      "tag":"0.0.2"
+    }
+   ]
+}
+

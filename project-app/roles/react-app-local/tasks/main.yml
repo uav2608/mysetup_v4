@@ -1,0 +1,16 @@
+---
+# tasks file for react-app
+
+- name: Create WORKDIR
+  file:
+    path: /{{base_path}}/{{development_path}}/{{react_project_path}}
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+
+- name: Unarchive project files
+  unarchive:
+    src: app-react.tar.gz
+    dest: /{{base_path}}/{{development_path}}/{{react_project_path}}/
+

@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Bastian Bukatz
+  description: a role to install different linux graphical deskto environments
+  min_ansible_version: 2.0
+  platforms:
+  - name: EL
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all

@@ -1,0 +1,75 @@
+---
+- name: Create static IP for Centos
+  template:
+    src: "static_ip2.j2"
+    dest: /etc/sysconfig/network-scripts/ifcfg-{{ interface_device_name }}
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reboot network
+
+#- name: Create static Bridge network for Centos
+#  template:
+#    src: "bridge.j2"
+#    dest: /etc/sysconfig/network-scripts/ifcfg-{{ bridge_device_name }}
+#    owner: root
+#    group: root
+#    mode: 0644
+#  notify: Reboot network
+
+  when: ansible_os_family == 'RedHat' 
+
+- name: Create static IP for Debian
+  template:
+    src: "static_ip2.j2"
+    dest: "/etc/network/interfaces"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reboot networking
+
+#- name: Create static Bridge network for Debian
+#  template:
+#    src: "bridge.j2"
+#    dest: "/etc/network/interfaces"
+#    owner: root
+#    group: root
+#    mode: 0644
+#  notify: Reboot network
+
+  when: ansible_os_family == 'Debian' 
+
+- name: Stop NetworkManager
+  shell: systemctl stop NetworkManager
+  become: yes
+
+- name: Disable NetworkManager
+  shell: systemctl disable NetworkManager
+  become: yes
+
+- name: Enable the "network" service for Centos
+  service:
+    name: network
+    state: started
+    enabled: true
+  check_mode: yes
+  ignore_errors: true
+  when: ansible_os_family == 'RedHat'
+
+- name: Enable the "networking" service for Debian
+  service:
+    name: networking
+    state: started
+    enabled: true
+  check_mode: yes
+  ignore_errors: true
+  when: ansible_os_family == 'Debian'
+
+- debug:
+    msg: "{{ interface_device_name }}"
+
+#- debug:
+#    msg: "{{ bridge_device_name }}"
+
+- debug:
+    msg: "{{ static_ip_addr }}"

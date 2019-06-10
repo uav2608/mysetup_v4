@@ -1,0 +1,7 @@
+[kali2]
+192.168.122.61 ansible_user=john1010
+
+[kali]
+192.168.122.17  ansible_user=john1010
+
+

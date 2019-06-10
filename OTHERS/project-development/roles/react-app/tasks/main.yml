@@ -1,0 +1,87 @@
+---
+# tasks file for react-app
+
+- name: Create WORKDIR
+  file:
+    path: /usr/src/app
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- block:
+
+  - name: "apt-get update"
+    apt:
+      update_cache: yes
+
+  - name: upgrade the system
+    apt:
+      name: "*"
+      state: latest
+      force_apt_get: True
+
+  - name: Add NPM respository
+    become: yes
+    get_url:
+      url: https://deb.nodesource.com/setup_10.x
+      dest: /usr/src/app
+      mode: 0755
+
+  - name: Run NPM repository script
+    become: yes
+    shell: bash /usr/src/app/setup_10.x
+
+  - name: Install rsync and sudo
+    apt:
+      name: "{{item}}"
+      state: present
+    loop:
+      - rsync
+      - sudo
+
+  when: ansible_facts['os_family'] == "Debian"
+
+- block:
+
+  - name: Add NPM respository
+    become: yes
+    get_url:
+      url: https://rpm.nodesource.com/setup_10.x
+      dest: /usr/src/app
+      mode: 0755
+
+  - name: Run NPM repository script
+    become: yes
+    shell: bash /usr/src/app/setup_10.x
+
+  - name: Install rsync and sudo
+    yum:
+      name: "{{item}}"
+      state: present
+    loop:
+      - rsync
+      - sudo
+
+  - name: Install NPM
+    yum:
+      name: "{{ item }}"
+      state: latest
+    loop:
+      - nodejs
+
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: NPM install
+  shell: npm install --silent
+
+- name: NPM install react-scripts
+  shell: npm install react-scripts -g --silent
+
+- name: Copy files to /usr/scr/app
+  synchronize:
+    src: /{{base_path}}/{{project_path}}/
+    dest: /usr/src/app/
+    rsync_opts:
+      - "--exclude=node_modules"
+

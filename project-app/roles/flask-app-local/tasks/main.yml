@@ -1,0 +1,17 @@
+---
+# tasks file for flask-app
+
+- name: Create WORKDIR
+  file:
+    path: /{{base_path}}/{{development_path}}/{{flask_project_path}}
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+
+- name: Unarchive project files
+  unarchive:
+    src: app-flask.tar.gz
+    dest: /{{base_path}}/{{development_path}}/{{flask_project_path}}/
+
+

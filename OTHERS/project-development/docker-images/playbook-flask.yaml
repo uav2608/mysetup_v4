@@ -1,0 +1,17 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - ../group_vars/all/vars.yaml
+
+  tasks:
+  - import_role:
+       name: flask-app
+    vars:
+       directory_path: "{{base_path}}"
+       project_path: "{{flask_project_path}}"
+
+#    import_role: 
+#      name: flask-app
+

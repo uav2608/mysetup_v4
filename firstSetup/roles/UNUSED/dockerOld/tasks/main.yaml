@@ -1,0 +1,41 @@
+---
+- name: Unarchive packer
+  unarchive:
+      src: https://releases.hashicorp.com/packer/{{packer_version}}/packer_{{packer_version}}_linux_amd64.zip
+      dest: /usr/local
+      remote_src: yes
+
+- name: Create link to packer
+  file:
+      src: /usr/local/packer
+      dest: /usr/local/bin/packer.io
+      state: link
+
+- name: Install pip
+  yum:
+      name: python-pip
+      state: present
+
+- name: installing Docker
+  pip:
+      name: "{{ item }}"
+  loop: ["docker", "docker-compose"] 
+
+- name: Install Docker Packages
+  yum:
+      name: "{{ item }}"
+      state: present
+  loop: "{{ docker_packages }}"
+
+- name: enable and start Docker
+  systemd:
+      name: docker
+      state: started
+      enabled: yes
+
+- name: Add the current user to docker group
+  user:
+      name: "{{ ansible_user }}"
+      groups: docker
+      append: yes
+

@@ -1,0 +1,22 @@
+---
+# tasks file for react-compose
+- name: React docker compose
+  docker_compose:
+    project_name: react
+    definition:
+       version: '2'
+       services:
+          reactapp:
+              image: "{{react_image}}"
+              volumes:
+                - '/{{base_path}}/{{development_path}}/{{react_project_path}}:/usr/src/app'
+              command: "npm start" 
+              ports:
+                - "3000:3000"
+  register: output
+
+- name: Register the output
+  debug:
+       var: output
+
+

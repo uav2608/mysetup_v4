@@ -1,0 +1,91 @@
+---
+# tasks file for firstSetupOthers
+
+- name: Add user
+  user:
+      name: "{{ nonpriv_user }}"
+      password: '$6$mysecretsalt$UKHPm2CYG4.4QOaQZ1DddpDyuXKdQf72jMbV7EckI.tKeTRE6kX5nS0ibvvYnlGeARyaEoC9XU8jAeWJAAkcL.'
+
+- block:
+
+  - name: Make sure to have Wheel group (Centos)
+    group:
+      name: wheel
+      state: present
+
+  - name: Add user to Wheel group (Centos)
+    user:
+      name: "{{ nonpriv_user }}"
+      groups: wheel
+
+  - name: Update sudoer file (Centos)
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%wheel\s'
+      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+
+  - name: Enable SSH (Centos)
+    service:
+      name: sshd
+      enabled: yes
+
+  when: ansible_os_family == 'RedHat'
+
+- block:
+
+  - name: Make sure to have Sudo group (Debian)
+    group:
+      name: sudo
+      state: present
+
+  - name: Add user to Sudo group (Debian)
+    user:
+      name: "{{ nonpriv_user }}"
+      groups: sudo
+
+  - name: Update sudoer file (Debian)
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%sudo\s'
+      line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+
+  - name: Enable SSH (Debian)
+    service:
+      name: ssh
+      enabled: yes
+
+  when: ansible_os_family == 'Debian'
+
+
+- name: create a .ssh directory if it doesn't exist
+  file:
+      path:  /home/{{ nonpriv_user }}/.ssh
+      state: directory
+      owner: "{{ nonpriv_user }}"
+      group: "{{ nonpriv_user }}"
+      mode: 0700
+
+- name: create file
+  file:
+      path: /home/{{ nonpriv_user }}/.ssh/authorized_keys
+      state: touch
+      owner: "{{ nonpriv_user }}"
+      group: "{{ nonpriv_user }}"
+      mode: 0644
+
+- name: Copy authorized_keys
+  lineinfile:
+      path: /home/{{ nonpriv_user }}/.ssh/authorized_keys
+      state: present
+      line: "{{ auth_key_initial }}"
+
+- name: Copy authorized_keys
+  lineinfile:
+      path: /home/{{ nonpriv_user }}/.ssh/authorized_keys
+      state: present
+      line: "{{ auth_key_second }}"
+

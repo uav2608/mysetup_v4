@@ -1,0 +1,8 @@
+{
+  "MYIMAGE"	: "python:3.7.2-alpine",
+  "WORKDIR"	: "WORKDIR /usr/src/app",
+  "CMD"		: "CMD [\"python3.6\", \"manage.py\", \"runserver\", \"-h\", \"0.0.0.0\"]",
+  "FILENAME"	: "playbook-flask.yaml",
+  "IMAGENAME"	: "uav2608/flask",
+  "MYTAG"	: "0.0.2"
+}

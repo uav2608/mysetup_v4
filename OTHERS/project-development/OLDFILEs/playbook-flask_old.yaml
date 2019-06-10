@@ -1,0 +1,46 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    image: python:3.6.6
+    container_name: myflaskcontainer
+    image_name: myflask
+  
+  tasks:
+  - name: Make sure to pull base image
+    docker_image:
+      name: "{{ image }}"
+
+  - name: Create container
+    docker_container:
+      image: "{{ image }}"
+      name: "{{ container_name }}"
+      hostname: "{{ container_name }}"
+      command: sleep infinity
+
+#  - name: Add new container to in-memory inventory
+#    add_host:
+#      hostname: "{{ container_name }}"
+#      ansible_connection: docker
+#      ansible_python_interpreter: /usr/bin/python3
+
+  - name: Run the role in the Container
+    delegate_to: myflaskcontainer
+#    delegate_to: "{{ container_name }}"
+#    remote_user: root
+    include_role: 
+      name: flask-app
+
+  - name: Commit the container
+    command: docker commit \
+       -c 'CMD ["/bin/sh"]' \
+       {{ container_name }} {{ image_name }}
+
+#    command: docker commit \
+#       -c 'CMD ["python", "/usr/src/app/manage.py", "runserver", "-h", "0.0.0.0"]' \
+#       {{ container_name }} {{ image_name }}
+
+  - name: Remove the container
+    docker_container:
+      name: "{{ container_name }}"
+      state: absent

@@ -1,0 +1,117 @@
+---
+# tasks file for npm
+
+- block:
+
+  - name: Add NPM respository (Debian)
+    become: yes
+    shell: curl -sL https://deb.nodesource.com/setup_11.x | bash -
+    register: curl_result
+    until: curl_result is success
+    retries: 5
+
+  - name: Update cache (Debian)
+    raw: sudo apt-get update
+    register: task_result
+    changed_when: False
+    until: task_result is success
+    retries: 5
+    ignore_errors: yes
+
+  - name: Install Nodejs (Debian)
+    apt:
+      name: "{{ item }}"
+      state: latest
+    loop:
+      - nodejs
+
+  when: ansible_facts['os_family'] == "Debian"
+
+
+- block:
+
+  - name: Clean yum list (Centos)
+    become: yes
+    shell: yum clean all
+
+  - name: Add NPM respository (Centos)
+    become: yes
+    shell: curl -sL https://rpm.nodesource.com/setup_11.x | bash -
+    register: curl_result
+    until: curl_result is success
+    retries: 5
+
+  - name: Install Nodejs (Centos)
+    yum:
+      name: "{{ item }}"
+      state: latest
+    loop:
+      - nodejs
+
+  when: ansible_facts['os_family'] == "RedHat"
+ 
+- name: testing for built versions
+  command: node --version && npm --version
+  register: existing_node
+  changed_when: false
+  ignore_errors: True
+
+- debug: msg="{{ existing_node.stdout_lines }} is present"
+
+#- block
+
+#  - name: Install NPM pre-requisites
+#    apt:
+#      name: "{{ item }}"
+#      state: latest
+#    loop:
+#      - gcc
+#      - g++
+#      - clang
+#      - make
+
+#  when ansible_facts['os_family'] == "Debian"
+
+#- block
+
+#  - name: Install NPM pre-requisites
+#    yum:
+#      name: "{{ item }}"
+#      state: latest
+#    loop:
+#      - gcc
+#      - g++
+#      - clang
+#      - make
+
+#  when ansible_facts['os_family'] == "RedHat"
+
+#- name: Nodejs | Download distribution
+#  get_url:
+#      url: "https://www.nodejs.org/dist/v{{ node_version }}/node-v{{ node_version }}.tar.gz"
+#      dest: /tmp/node-v{{ node_version }}.tar.gz
+
+#- name: Nodejs | Unpack distribution
+#  unarchive:
+#      src: /tmp/node-v{{ node_version }}.tar.gz
+#      dest: /tmp
+#      remote_src: yes
+
+#- name: Nodejs | Configure for install
+#  command: "./configure"
+#  args:
+#      chdir: "/tmp/node-v{{ node_version }}"
+
+#- name: Nodejs | make
+#  become: yes
+#  command: "make -j4"
+#  args:
+#      chdir: "/tmp/node-v{{ node_version }}"
+
+#- name: Nodejs | make install
+#  become: yes
+#  command: "make install"
+#  args:
+#      chdir: "/tmp/node-v{{ node_version }}-linux-x64"
+
+

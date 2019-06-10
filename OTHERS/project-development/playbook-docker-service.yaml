@@ -1,0 +1,12 @@
+---
+- name: Run using a project directory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+#    - import_tasks: ./docker-services/flask_service.yaml
+    - import_tasks: ./docker-services/react_service.yaml    
+
+#    - debug: 
+#         msg: /{{main_path}}/docker-services/flask_service.yaml
+

@@ -1,0 +1,41 @@
+{
+  "builders": [
+    {
+      "name": "docker",
+      "type": "docker",
+      "image": "{{user `MYIMAGE`}}",
+      "commit": "true",
+      "run_command": ["-d", "-i", "-t", "{{.Image}}", "/bin/sh"],
+      "changes": [
+         "{{user `WORKDIR`}}"
+      ]
+    }
+   ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "yum install python -yq"
+       ]
+    },
+    {
+      "type": "ansible",
+      "user": "root",
+      "playbook_file": "{{user `FILENAME`}}",
+      "extra_arguments": [
+         "-v"
+       ]
+    }
+   ],
+
+  "post-processors": [
+    {
+      "type": "docker-tag",
+      "repository": "{{user `IMAGENAME`}}",
+      "tag": "{{user `MYTAG`}}"
+    }
+   ]
+}
+
+

@@ -1,0 +1,9 @@
+---
+- hosts: all
+  connection: local
+  tasks:
+    - name: Container name
+      docker_container:
+        name: todo
+        state: absent
+

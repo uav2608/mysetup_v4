@@ -1,0 +1,7 @@
+---
+# handlers file for firstSetupOthers
+
+- name: Restart network
+  service:
+     name: network
+     state: restarted                   

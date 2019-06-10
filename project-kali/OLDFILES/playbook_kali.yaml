@@ -1,0 +1,15 @@
+---
+- hosts: kali
+  gather_facts: yes
+  remote_user: root
+  roles:
+    - firstSetupOthers
+
+- hosts: kali
+  gather_facts: no
+  remote_user: john1010
+  become: true
+  roles:
+    - nextstep
+    - openvpn
+    - tor_kali 

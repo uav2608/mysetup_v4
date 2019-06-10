@@ -1,0 +1,27 @@
+---
+# tasks file for flask-service
+- name: Flask docker service
+  docker_compose:
+    project_name: flask
+    definition:
+       version: '3.3'
+       services:
+          flaskapp:
+              image: "{{flask_image}}"
+              volumes:
+                - '/{{base_path}}/{{development_path}}/{{flask_project_path}}:/usr/src/app'
+              command: "python manage.py"
+              ports:
+                - "5000:5000"
+#  register: output
+
+#- name: Register the output
+#  debug:
+#       var: output
+
+#- name: test
+#  assert:
+#       that:
+#          - "flaskapp.flask_flaskapp_1.state.running"
+
+

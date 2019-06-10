@@ -1,0 +1,21 @@
+---
+- name: Create main setup
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+ 
+  roles:
+    - projectsetup 
+
+
+#  tasks:
+#  - name: Create main directories
+#    file:
+#      path: "{{ item }}"
+#      state: directory
+#      mode: 0755 
+#    loop:
+#      - /{{base_path}}/1development
+#      - /{{base_path}}/2testing
+#      - /{{base_path}}/3staging
+#      - /{{base_path}}/4production

@@ -1,0 +1,41 @@
+---
+# tasks file for dev_ide
+
+- block:
+  - name: Install Packages (Centos)
+    yum:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ dev_packages }}"
+
+  when: ansible_os_family == "RedHat"
+
+- block:
+  - name: Install Packages (Debian)
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ dev_packages }}"
+
+  when: ansible_os_family == "Debian"
+
+- name: Download and unarchive Pycharm and Webstorm
+  unarchive:
+      src: "{{ item }}"
+      dest: /usr/local
+      remote_src: yes
+  loop: "{{ jetbrain_packages }}"
+
+- name: Create link to webstorm
+  file:
+      src: /usr/local/WebStorm-191.7141.49/bin/webstorm.sh
+      dest: /usr/local/bin/webstorm.sh
+      state: link
+
+- name: Create link to pycharm
+  file:
+      src: /usr/local/pycharm-2019.1.2/bin/pycharm.sh
+      dest: /usr/local/bin/pycharm.sh
+      state: link
+
+

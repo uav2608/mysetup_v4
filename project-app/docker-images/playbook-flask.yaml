@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  gather_facts: no
+  become: yes
+  vars_files:
+    - ../group_vars/all/vars.yaml
+  roles:
+    - role: ../roles/flask-app-local
+      vars:
+         flask_project_name  : flask-app1
+
+- hosts: all:!vagrant
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - ../group_vars/all/vars.yaml
+
+  roles:
+    - role: ../roles/flask-app
+      vars:
+         flask_project_name  : flask-app1
+
+- hosts: vagrant
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - ../group_vars/all/vars.yaml
+
+  roles:
+    - ../roles/python3
+    - ../roles/pip
+    - role: ../roles/flask-app
+      vars:
+         flask_project_name  : flask-app1
+

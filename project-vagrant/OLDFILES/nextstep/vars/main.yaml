@@ -1,0 +1,19 @@
+---
+# Group vars: packages
+initial_packages: 
+  - vim
+  - net-tools
+  - wget
+  - p7zip
+  - bzip2
+  - unar
+  - htop
+  - rsync
+  - chrony
+  - kexec-tools
+  - inxi
+  - git
+  - unzip
+  - tree
+  - tmux
+

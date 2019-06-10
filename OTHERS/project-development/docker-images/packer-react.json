@@ -1,0 +1,43 @@
+{
+  "builders": [
+    {
+      "name": "docker",
+      "type": "docker",
+      "image": "centos:7.6.1810",
+      "commit": "true",
+      "run_command": ["-d", "-i", "-t", "{{.Image}}", "/bin/sh"],
+      "changes": [
+         "WORKDIR /usr/src/app",
+         "CMD [\"npm\", \"start\"]"
+      ]
+    }
+   ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "yum update -y",
+        "yum install python -yq"
+       ]
+    },
+    {
+      "type": "ansible",
+      "user": "root",
+      "playbook_file": "playbook-react.yaml",
+      "extra_arguments": [
+         "-v"
+       ]
+    }
+   ],
+
+  "post-processors": [
+    {
+      "type": "docker-tag",
+      "repository": "uav2608/react",
+      "tag":"0.0.2"
+    }
+   ]
+}
+
+

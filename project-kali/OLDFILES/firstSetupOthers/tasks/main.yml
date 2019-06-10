@@ -1,0 +1,94 @@
+---
+# tasks file for firstSetupOthers
+- name: Make sure to have Sudo group
+  group:
+      name: sudo
+      state: present
+
+- name: Add new nonpriv user and add to sudo group
+  user:
+      name: "{{ nonpriv_user }}"
+      password: "$6$u6D3wpdYvxc3W47q$ZaNGMieaO6gA5SEOIxEEXMIEadXiHB4XBBfyrzjlxmmgNUCSg9Zgs3SU6Gv3.3AobS8NLxSPyVODhAeau3ZP40"
+      shell: /bin/bash
+      groups: sudo
+      state: present
+      
+- name: Update sudoer file
+  lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%sudo\s'
+      line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+
+- name: create a .ssh directory if it doesn't exist
+  file:
+      path:  /home/{{ nonpriv_user }}/.ssh
+      state: directory
+      owner: "{{ nonpriv_user }}"
+      group: "{{ nonpriv_user }}"
+      mode: 0700
+
+- name: Set authorized keys taken from file
+  authorized_key:
+      user: "{{ nonpriv_user }}"
+      state: present
+      key: "{{ lookup('file', '/home/{{main_user}}/.ssh/id_rsa.pub' ) }}"
+
+- name: Setup networking (resolv.conf)
+  template: owner=root group=root mode=644 
+      src=resolv.j2 
+      dest=/etc/resolv.conf
+  when: ansible_facts['os_family'] == "Kali GNU/Linux"
+
+- name: Setup networking (interfaces)
+  template: owner=root group=root mode=644 
+      src=interface.j2 
+      dest=/etc/network/interfaces
+  when: ansible_facts['os_family'] == "Kali GNU/Linux"
+  
+- name: Enable SSH
+  service:
+     name: ssh
+     enabled: yes
+
+   
+#- name: Assign static IP
+#  template:
+#      src: static_ip
+#      dest: /etc/sysconfig/network-scripts/ifcfg-ens37
+#      owner: root
+#      group: root
+#      mode: 0644
+#  notify:  Restart network
+
+
+
+#- name: create file
+#  file:
+#      path: /etc/sysconfig/network-scripts/ifcfg-ens37
+#      state: touch
+#      owner: root
+#      group: root
+#      mode: 0644
+#      modification_time: "preserve"
+#      access_time: "preserve"
+#
+#- name: Make network interface up
+#  net_interface:
+#      name: ifcfg-ens37
+#      enabled: True 
+#
+#- name: Assign static IP
+#  template:
+#      src: static_ip
+#      dest: /etc/sysconfig/network-scripts/ifcfg-ens37
+#      owner: root
+#      group: root
+#      mode: 0644
+#
+#- name: Restart network
+#  service:
+#     name: network
+#     state: restarted
+

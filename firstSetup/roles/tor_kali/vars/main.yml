@@ -1,0 +1,16 @@
+---
+# vars file for tor_kali
+
+repo_packages   :
+  - "deb http://http.kali.org/kali kali-rolling main non-free contrib"
+  - "deb-src http://http.kali.org/kali kali-rolling main non-free contrib"
+  - "deb http://http.kali.org/kali kali-rolling main non-free contrib"
+ 
+tor_packages    :
+  - tor
+
+non_priv_user   : john1010
+
+torSource       : https://www.torproject.org/dist/torbrowser/{{dist_number}}/tor-browser-linux64-{{dist_number}}_en-US.tar.xz
+
+#dist_number    : 8.5.1

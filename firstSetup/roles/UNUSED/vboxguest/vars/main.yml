@@ -1,0 +1,3 @@
+---
+# vars file for vboxguest
+packages: [ "make", "gcc", "kernel-headers", "kernel-devel", "perl", "dkms", "bzip2" ] 

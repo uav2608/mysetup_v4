@@ -1,0 +1,8 @@
+---
+# tasks file for vmwaretools/Debian
+
+- name: Installing Open VMware Tools (open-vm-tools)
+  apt:
+    name: open-vm-tools
+  register: result
+  until: result is succeeded

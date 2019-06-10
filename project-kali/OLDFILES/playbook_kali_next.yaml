@@ -1,0 +1,15 @@
+---
+- hosts: kali2
+  gather_facts: no
+  remote_user: john1010
+  become: true
+#  pre_tasks:
+#    - name: Install python for Ansible
+#      raw: (apt -qqy install python-dev python-all python-all-dev \
+#            python-tz python2.7 python2.7-dev)
+#    - setup:
+
+  roles:
+    - nextstep
+    - openvpn
+    - tor_kali 

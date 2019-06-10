@@ -1,0 +1,4 @@
+---
+# vars file for flask-app
+
+python_version: '3.6.8'

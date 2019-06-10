@@ -1,0 +1,46 @@
+client 
+
+dev tun1 
+
+proto udp 
+
+remote {{ myipaddressudp2500 }}
+
+resolv-retry infinite
+
+redirect-gateway def1 
+
+nobind
+
+tun-mtu 1500
+
+tun-mtu-extra 32
+
+ca ca-4k.crt
+
+cert user-4k.crt
+
+key user-4k.key
+
+cipher AES-256-CBC
+
+remote-cert-tls server
+
+persist-key
+
+persist-tun
+
+verb 3
+
+explicit-exit-notify
+
+route-method  exe
+
+route-delay 3
+
+route-metric 512 
+
+ping 45
+
+ping-restart 225
+

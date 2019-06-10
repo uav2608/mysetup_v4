@@ -1,0 +1,91 @@
+---
+# tasks file for openvpn
+
+- name: Start and Enable openvpn service
+  service:
+    name: openvpn
+    state: started
+    enabled: yes
+
+- name: copy template of UDP53 with 4k conf
+  template:
+    src: udp1_53.j2
+    dest: /etc/openvpn/client/udp53.conf
+    mode: 0644
+  when: openvpn_name not in without4k
+
+- name: copy template of UDP53 without 4k conf
+  template:
+    src: udp2_53.j2
+    dest: /etc/openvpn/client/udp53.conf
+    mode: 0644
+  when: openvpn_name in without4k   
+
+- name: copy template of UDP2500 with 4k conf
+  template:
+    src: udp1_2500.j2
+    dest: /etc/openvpn/client/udp2500.conf
+    mode: 0644
+  when: openvpn_name not in without4k
+
+- name: copy template of UDP2500 without 4k conf
+  template:
+    src: udp2_2500.j2
+    dest: /etc/openvpn/client/udp2500.conf
+    mode: 0644
+  when: openvpn_name in without4k
+
+- name: copy template of TCP with 4k conf
+  template:
+    src: tcp1.j2
+    dest: /etc/openvpn/client/tcp.conf
+    mode: 0644
+  when: openvpn_name not in without4k
+
+- name: copy template of TCP without 4k conf
+  template:
+    src: tcp2.j2
+    dest: /etc/openvpn/client/tcp.conf
+    mode: 0644
+  when: openvpn_name in without4k
+
+- name: copy template of TCP Shadow mode with 4k conf
+  template:
+    src: tcpShM1.j2
+    dest: /etc/openvpn/client/tcpsm.conf
+    mode: 0644
+  when: openvpn_name not in without4k
+
+- name: copy template of TCP Shadow mode without 4k conf
+  template:
+    src: tcpShM2.j2
+    dest: /etc/openvpn/client/tcpsm.conf
+    mode: 0644
+  when: openvpn_name in without4k
+
+- name: Copy files
+  copy:
+     src: "{{item}}"
+     dest: /etc/openvpn/client/
+     mode: 0644
+  loop: "{{ cert_files }}" 
+
+- name: Copy "myip.sh" file
+  copy:
+    src: myip.sh
+    dest: /home/{{nonpriv_user}}/myip.sh
+    owner: "{{nonpriv_user}}"
+    group: "{{nonpriv_user}}"
+    mode: 0755
+
+- name: Notify re IP
+  cron:
+    name: "My external IP"
+    minute: "*"
+    hour: "*"
+    day: "*"
+    weekday: "*"
+    month: "*"
+    user: "{{ nonpriv_user }}"
+    job: "/home/{{nonpriv_user}}/myip.sh"
+

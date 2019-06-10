@@ -1,0 +1,27 @@
+---
+# tasks file for tor_kali
+
+- name: install tor
+  apt:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ tor_packages }}"
+
+- name: Create directory
+  become: False
+  file:
+    path: /home/{{nonpriv_user}}/tor-browser
+    state: directory
+    mode: 0755
+
+- name: Download and unarchive Tor Browser
+  become: False
+  unarchive:
+    src: "{{torSource}}"
+    dest: /home/{{nonpriv_user}}/tor-browser
+    remote_src: yes 
+  register: extract_result
+  until: extract_result is success
+  retries: 5
+  delay: 10
+

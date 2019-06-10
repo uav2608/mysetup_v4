@@ -1,0 +1,6 @@
+{
+  "MYIMAGE"	: "gitlab/gitlab-runner",
+  "FILENAME"	: "playbook-gitlab.yaml",
+  "IMAGENAME"	: "uav2608/gitlab-runner",
+  "MYTAG"	: "0.0.1"
+}

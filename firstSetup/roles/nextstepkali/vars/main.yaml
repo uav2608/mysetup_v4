@@ -1,0 +1,24 @@
+---
+# Group vars: packages
+initial_packages: 
+  - vim
+  - net-tools
+  - wget
+  - p7zip
+  - bzip2
+  - unar
+  - htop
+  - rsync
+  - chrony
+  - kexec-tools
+  - inxi
+  - git
+  - unzip
+  - tree
+  - tmux
+
+repo_packages:
+  - "deb http://http.kali.org/kali kali-rolling main non-free contrib"
+  - "deb-src http://http.kali.org/kali kali-rolling main non-free contrib"
+  - "deb http://http.kali.org/kali kali-rolling main non-free contrib"
+

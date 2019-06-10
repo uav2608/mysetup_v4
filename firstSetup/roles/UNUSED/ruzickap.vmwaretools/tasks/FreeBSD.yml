@@ -1,0 +1,8 @@
+---
+# tasks file for vmwaretools/Debian
+
+- name: Installing Open VMware Tools (open-vm-tools) for FreeBSD
+  pkgng:
+    name: open-vm-tools-nox11
+  register: result
+  until: result is succeeded

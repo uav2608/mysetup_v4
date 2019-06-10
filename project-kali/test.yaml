@@ -1,0 +1,30 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: yes
+  become: true
+
+  vars:
+    interface_device_name   : "{{ ansible_interfaces | select('match', '^(eth|enp)') | list | join('\n') }}"
+    temp_addr               : "{{ ansible_all_ipv4_addresses | select('match', '^(192)' ) | list | join('\n') }}/24"
+    static_ip               : "{{ temp_addr | ipaddr('-50') }}"
+    static_gateway          : "{{ temp_addr | ipaddr('first_usable') }} "
+
+  tasks:
+
+  - debug:
+      msg: "{{interface_device_name}}"
+
+  - debug:
+      msg: "{{temp_addr}}"
+
+  - debug:
+      msg: "{{static_gateway}}"
+
+  - debug:
+      msg: "{{static_ip}}"
+
+  - debug: 
+      msg: /etc/sysconfig/network-scripts/ifcfg-{{ interface_device_name }}
+
+

@@ -1,0 +1,24 @@
+---
+
+- name: Install dependencies
+  become: yes
+  yum:
+    name: "{{item}}"
+    state: latest
+  loop:
+    - "@Development tools"
+    - https://centos7.iuscommunity.org/ius-release.rpm
+    - dkms
+    - gcc
+    - kernel-devel
+    - kernel-devel-3.10.0-957.10.1.el7.x86_64 
+ 
+- name: installing Virtualbox 5.1.38
+  become: yes
+  yum:
+      name: https://download.virtualbox.org/virtualbox/5.1.38/VirtualBox-5.1-5.1.38_122592_el7-1.x86_64.rpm
+      state: present
+
+- name: rebuilding kernel
+  become: yes
+  shell: /sbin/vboxconfig

@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - role: bassinator.linux_desktop
+      linux_desktop: 'mate'

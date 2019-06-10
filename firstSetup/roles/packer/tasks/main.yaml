@@ -1,0 +1,13 @@
+---
+- name: Download and unarchive packer
+  unarchive:
+      src: https://releases.hashicorp.com/packer/{{packer_version}}/packer_{{packer_version}}_linux_amd64.zip
+      dest: /usr/local
+      remote_src: yes
+
+- name: Create link to packer
+  file:
+      src: /usr/local/packer
+      dest: /usr/local/bin/packer.io
+      state: link
+

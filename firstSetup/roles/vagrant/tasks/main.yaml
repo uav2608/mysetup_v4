@@ -1,0 +1,52 @@
+---
+- block:
+
+  - name: Install Packages (Centos)
+    yum:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ vagrant_packages }}"
+
+  - name: installing Vagrant (Centos)
+    yum:
+      name: https://releases.hashicorp.com/vagrant/1.9.6/vagrant_1.9.6_x86_64.rpm
+      state: present
+
+  when: ansible_os_family == "RedHat"
+
+
+- block:
+
+  - name: Install Packages (Debian)
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ vagrant_packages }}"
+
+  - name: installing Vagrant (Debian)
+    apt:
+      name: https://releases.hashicorp.com/vagrant/1.9.6/vagrant_1.9.6_x86_64.rpm
+      state: present
+
+  when: ansible_os_family == "Debian"
+
+
+- name: enable and start libvirtd
+  systemd:
+      name: libvirtd
+      state: started
+      enabled: yes
+
+- name: Add the current user to libvirt group
+  user:
+      name: "{{ item }}"
+      groups: libvirt
+      append: yes
+  loop:
+    - "{{ ansible_user }}"
+    - "{{ current_user }}" 
+
+- name: installing vagrant-libvirt plugin
+  become: no
+  shell: vagrant plugin install vagrant-libvirt
+

@@ -1,0 +1,105 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+	
+numserverscentos = ENV['numserverscentos'] || "2"
+numserverscentos = numserverscentos.to_i
+
+numserversdebian = ENV['numserversdebian'] || "2"
+numserversdebian = numserversdebian.to_i
+
+numserverkali = ENV['numserverkali'] || "1"
+numserverkali = numserverkali.to_i
+
+serverscentos = Hash.new
+(1..numserverscentos).each do |i|
+    servernamecentos = "centos%02d" % i
+    octet = i + 50
+    serverscentos[servernamecentos] = {
+      ip: "192.168.122.#{octet}"
+    }
+end
+
+serversdebian = Hash.new
+(1..numserversdebian).each do |i|
+    servernamedebian = "debian%02d" % i
+    octet = i + 100
+    serversdebian[servernamedebian] = {
+      ip: "192.168.122.#{octet}"
+    }
+end
+
+serverkali = Hash.new
+(1..numserverkali).each do |i|
+    servernamekali = "kali%02d" % i
+    octet = i + 200
+    serverkali[servernamekali] = {
+      ip: "192.168.122.#{octet}"
+    }
+end
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+    vb.memory = "1024"
+  end
+
+  config.vm.box = "centos/7"
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  (1..numserverscentos).each do |i|
+      servernamecentos = "centos%02d" % i
+      config.vm.define servernamecentos do |svr1|
+        svr1.vm.hostname = servernamecentos
+        svr1.vm.network "private_network", ip: serverscentos [servernamecentos][:ip]
+        svr1.vm.provision "shell",
+          inline: "sudo yum update && sudo yum install -y python"
+        svr1.vm.provision "ansible" do |ansible|
+          ansible.playbook = "playbook_centos.yaml"
+          ansible.extra_vars = {
+            serverscentos: serverscentos
+          }
+        end
+      end
+  end 
+
+  config.vm.box = "debian/stretch64"
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  (1..numserversdebian).each do |i|
+      servernamedebian = "debian%02d" % i
+      config.vm.define servernamedebian do |svr2|
+        svr2.vm.hostname = servernamedebian
+        svr2.vm.network "private_network", ip: serversdebian [servernamedebian][:ip]
+        svr2.vm.provision "shell",
+          inline: "sudo apt-get update && sudo apt install -y python"
+        svr2.vm.provision "ansible" do |ansible|
+          ansible.playbook = "playbook_debian.yaml"
+          ansible.extra_vars = {
+            serversdebian: serversdebian
+          }
+        end
+      end
+  end
+
+  config.vm.box = "offensive-security/kali-linux"
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  (1..numserverkali).each do |i|
+      servernamekali = "kali%02d" % i
+      config.vm.define servernamekali do |svr3|
+        svr3.vm.hostname = servernamekali
+        svr3.vm.network "private_network", ip: serverkali [servernamekali][:ip]
+        svr3.vm.provision "shell",
+          inline: "sudo apt-get update && sudo apt install -y python"
+        svr3.vm.provision "ansible" do |ansible|
+          ansible.playbook = "playbook_kali.yaml"
+          ansible.extra_vars = {
+            serverkali: serverkali
+          }
+        end
+      end
+  end
+end
+

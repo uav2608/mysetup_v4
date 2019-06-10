@@ -1,0 +1,54 @@
+---
+- block:
+
+  - name: Install Packages (Centos)
+    yum:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ kvm_packages1 }}"
+
+  when: ansible_os_family == "RedHat"
+
+
+- block:
+
+  - name: Install Packages (Debian)
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ kvm_packages1 }}"
+
+  when: ansible_os_family == "Debian"
+
+
+- name: enable and start libvirtd
+  systemd:
+      name: libvirtd
+      state: started
+      enabled: yes
+
+- name: Add the current user to libvirt group
+  user:
+      name: "{{ item }}"
+      groups: libvirt
+      append: yes
+  loop:
+    - "{{ ansible_user }}"
+    - "{{ current_user }}"
+
+- name: Create folder for ISO
+  become: no
+  file:
+      path: ~/ISO
+      state: directory
+      mode: 0755
+      owner: "{{ ansible_user }}"
+
+- name: Download images
+  become: no
+  get_url: 
+      url: "{{ item }}"
+      dest: ~/ISO/
+      mode: '0666'
+  loop: "{{ kvm_packages2 }}" 
+

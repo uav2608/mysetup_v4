@@ -1,0 +1,76 @@
+---
+- block:
+  - name: Add multiple repositories into the same file (1/2)
+    yum_repository:
+      name: epel
+      description: EPEL YUM repo
+      file: external_repos
+      baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+      gpgcheck: no
+
+
+  - name: Add multiple repositories into the same file (2/2)
+    yum_repository:
+      name: rpmforge
+      description: RPMforge YUM repo
+      file: external_repos
+      baseurl: http://apt.sw.be/redhat/el7/en/$basearch/rpmforge
+      mirrorlist: http://mirrorlist.repoforge.org/el7/mirrors-rpmforge
+      enabled: no
+
+  - name: update the system
+    yum:
+      name: "*"
+      state: latest
+
+  - name: Install Packages
+    yum:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ initial_packages }}"
+  when: ansible_facts['os_family'] == "RedHat"
+
+- block:
+
+  - name: "apt-get update"
+    apt:
+      update_cache: yes
+
+  - name: upgrade the system
+    apt:
+      name: "*"
+      state: latest
+      force_apt_get: True
+
+  - name: Install Packages
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ initial_packages }}"
+
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Disallow root SSH access
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^PermitRootLogin\s'
+      line: 'PermitRootLogin no'
+      state: present
+  notify: Restart ssh
+
+- name: Disallow empty passwords
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^PermitEmptyPasswords\s'
+      line: 'PermitEmptyPasswords no'
+      state: present
+  notify: Restart ssh
+
+- name: Disallow password authentication
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^PasswordAuthentication\s'
+      line: 'PasswordAuthentication no'
+      state: present
+  notify: Restart ssh
+ 

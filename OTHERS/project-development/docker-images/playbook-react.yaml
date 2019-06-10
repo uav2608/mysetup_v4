@@ -1,0 +1,17 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - ../group_vars/all/vars.yaml
+
+  tasks: 
+  - import_role:
+       name: react-app
+    vars:
+       directory_path: "{{base_path}}"
+       project_path: "{{react_project_path}}"
+
+#  - debug:
+#       msg: /{{base_path}}/group_vars/all/vars.yaml
+

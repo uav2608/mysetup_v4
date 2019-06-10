@@ -1,0 +1,4 @@
+---
+# vars file for react-app
+
+node_version: '11.7.0'

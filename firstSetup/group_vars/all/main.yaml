@@ -1,0 +1,6 @@
+---
+P                              : A0909!
+#auth_key_initial               : "{{ my_key }}"
+net_interface_device_name      : "ens37"
+static_ip_addr                 : "192.168.61.130"
+static_gateway                 : "192.168.61.1"

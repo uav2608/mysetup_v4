@@ -1,0 +1,7 @@
+{
+  "MYIMAGE"	: "node:12.4-alpine",
+  "WORKDIR"	: "WORKDIR /usr/src/app",
+  "FILENAME"	: "playbook-react.yaml",
+  "IMAGENAME"	: "uav2608/react",
+  "MYTAG"	: "0.0.2"
+}

@@ -1,0 +1,141 @@
+---
+# tasks file for flask-app
+
+- name: Create WORKDIR
+  file:
+    path: /usr/src/app
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+
+- block:
+
+  - name: Install tar (Alipne)
+    apk:
+      name: tar
+      state: latest
+      update_cache: yes
+
+  when: ansible_os_family == "Alpine"
+
+- name: Unarchive project files
+  unarchive:
+    src: app-flask.tar.gz
+    dest: /usr/src/app
+
+- block:
+
+  - name: Install rsync and sudo (Debian)
+    apt:
+      name: "{{item}}"
+      state: present
+    loop:
+      - rsync
+      - sudo
+
+  when: ansible_facts['os_family'] == "Debian"
+
+- block:
+
+  - name: Install rsync and sudo (Centos)
+    yum:
+      name: "{{item}}"
+      state: present
+    loop:
+      - rsync
+      - sudo
+
+  when: ansible_facts['os_family'] == "RedHat"
+
+- block:
+
+  - name: Install rsync and sudo (Alpine)
+    apk:
+      name: "{{item}}"
+      state: present
+    loop:
+      - rsync
+      - sudo
+
+  when: ansible_facts['os_family'] == "Alpine"
+
+- name: Install flask packages
+  shell: pip3.7 install -r /usr/src/app/requirements.txt
+  register: pip_result
+  until: pip_result is success
+  retries: 5
+  delay: 5
+
+- debug:
+    msg: /{{base_path}}/{{development_path}}/{{flask_project_path}}/
+
+
+#- name: Create WORKDIR
+#  file:
+#    path: /usr/src/app
+#    state: directory
+#    owner: root
+#    group: root
+#    mode: 0755
+
+#- block:
+
+#  - name: Install Epel-repository
+#    yum:
+#      name: epel-release
+#      state: present
+
+#  - name: Install rsync and sudo
+#    yum:
+#      name: "{{item}}"
+#      state: present
+#    loop:
+#      - rsync
+#      - sudo
+#      - python36-pip
+
+#  when: ansible_facts['os_family'] == "RedHat"
+
+
+#- block:
+
+#  - name: Install rsync and sudo
+#    apt:
+#      name: "{{item}}"
+#      state: present
+#    loop:
+#      - sudo
+#      - rsync
+
+#  when: ansible_facts['os_family'] == "Debian"
+
+
+#- name: Copy files to /usr/src/app
+#  copy:
+#    src: /{{base_path}}/{{development_path}}/{{flask_project_path}}/requirements.txt
+#    dest: /usr/src/app/
+#    owner: root
+#    group: root
+#    mode: 0664
+
+#- name: Install flask packages
+#  shell: pip3 install -r /usr/src/app/requirements.txt
+#  register: pip_result
+#  until: pip_result is success
+#  retries: 5
+#  delay: 5
+
+#- name: Copy file to /usr/src/app
+#  copy:
+#    src: /{{base_path}}/{{development_path}}/{{flask_project_path}}/manage.py
+#    dest: /usr/src/app/
+#    owner: root
+#    group: root
+#    mode: 0664
+
+#- name: Copy files to /usr/scr/app/project
+#  synchronize:
+#    src: /{{base_path}}/{{development_path}}/{{flask_project_path}}/project
+#    dest: /usr/src/app/
+
